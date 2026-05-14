@@ -1,0 +1,152 @@
+﻿using System;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using FDoBySA.Helpers;
+
+namespace FDoBySA.Views
+{
+    public partial class ReadingListsPage : Page
+    {
+        private string _currentStatus = "Читаю";
+        private System.Windows.Threading.DispatcherTimer _searchTimer;
+
+        public ReadingListsPage()
+        {
+            InitializeComponent();
+            LoadBooks();
+
+            _searchTimer = new System.Windows.Threading.DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(500)
+            };
+            _searchTimer.Tick += (s, e) =>
+            {
+                _searchTimer.Stop();
+                LoadBooks();
+            };
+        }
+
+        private void LoadBooks()
+        {
+            if (!UserSession.IsAuthenticated)
+            {
+                NavigationService?.Navigate(new LoginWindow());
+                return;
+            }
+
+            var query = from rl in Core.Context.ReadingLists
+                        where rl.UserId == UserSession.CurrentUser.UserId
+                        where rl.Status == _currentStatus
+                        join b in Core.Context.Books on rl.BookId equals b.BookId
+                        where !b.IsFrozen
+                        select new
+                        {
+                            BookId = b.BookId,
+                            Title = b.Title,
+                            CoverPath = b.CoverPath,
+                            AuthorName = b.Users.DisplayName,
+                            Status = rl.Status,
+                            AvgRating = b.Reviews.Where(r => !r.IsFrozen)
+                                        .Average(r => (double?)r.Rating) ?? 0
+                        };
+
+            string search = txtSearch.Text.Trim();
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(b => b.Title.Contains(search) ||
+                                         b.AuthorName.Contains(search));
+            }
+
+            string sort = (cmbSort.SelectedItem as ComboBoxItem)?.Content.ToString();
+            if (sort == "По оценке")
+                query = query.OrderByDescending(b => b.AvgRating);
+            else
+                query = query.OrderBy(b => b.Title);
+
+            var books = query.ToList();
+
+            if (books.Count == 0)
+            {
+                BooksGrid.Visibility = Visibility.Collapsed;
+                txtEmpty.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                BooksGrid.Visibility = Visibility.Visible;
+                txtEmpty.Visibility = Visibility.Collapsed;
+                BooksGrid.ItemsSource = books;
+            }
+        }
+
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count > 0)
+            {
+                var tabItem = e.AddedItems[0] as TabItem;
+                _currentStatus = tabItem.Tag.ToString();
+                LoadBooks();
+            }
+        }
+
+        private void ComboBox_Loaded(object sender, RoutedEventArgs e)
+        {
+            var combo = sender as ComboBox;
+            if (combo?.DataContext != null)
+            {
+                dynamic item = combo.DataContext;
+                string currentStatus = item.Status;
+
+                foreach (ComboBoxItem cbItem in combo.Items)
+                {
+                    if (cbItem.Content.ToString() == currentStatus)
+                    {
+                        combo.SelectedItem = cbItem;
+                        break;
+                    }
+                }
+            }
+        }
+
+        private void Status_Changed(object sender, SelectionChangedEventArgs e)
+        {
+            var combo = sender as ComboBox;
+            if (combo == null || combo.SelectedItem == null) return;
+
+            int bookId = (int)combo.Tag;
+            string newStatus = (combo.SelectedItem as ComboBoxItem)?.Content.ToString();
+
+            var readingList = Core.Context.ReadingLists
+                .FirstOrDefault(rl => rl.UserId == UserSession.CurrentUser.UserId &&
+                                      rl.BookId == bookId);
+
+            if (readingList != null && readingList.Status != newStatus)
+            {
+                readingList.Status = newStatus;
+                Core.Context.SaveChanges();
+                LoadBooks();
+            }
+        }
+
+        private void Search_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            _searchTimer.Stop();
+            _searchTimer.Start();
+        }
+
+        private void Reset_Click(object sender, RoutedEventArgs e)
+        {
+            txtSearch.Clear();
+            cmbSort.SelectedIndex = 0;
+            LoadBooks();
+        }
+
+        private void Sort_Changed(object sender, SelectionChangedEventArgs e) => LoadBooks();
+
+        private void ReadBook_Click(object sender, RoutedEventArgs e)
+        {
+            int bookId = (int)((Button)sender).Tag;
+            NavigationService?.Navigate(new BookPage(bookId));
+        }
+    }
+}

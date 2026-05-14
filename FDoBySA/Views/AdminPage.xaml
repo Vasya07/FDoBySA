@@ -1,0 +1,224 @@
+﻿<Page x:Class="FDoBySA.Views.AdminPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Панель администратора"
+      Background="#F5F5F5">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Панель администратора" FontSize="24" FontWeight="Bold"
+                   Margin="0,0,0,20"/>
+
+        <TabControl Grid.Row="1">
+            <TabItem Header="Жалобы">
+                <ItemsControl x:Name="ComplaintsGrid" Margin="10">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="White" CornerRadius="5" 
+                                    Margin="0,0,0,10" Padding="15">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel>
+                                        <TextBlock FontWeight="Bold">
+                                            <Run Text="Тип: "/>
+                                            <Run Text="{Binding TargetType}"/>
+                                            <Run Text=" | ID: "/>
+                                            <Run Text="{Binding TargetId}"/>
+                                        </TextBlock>
+                                        <TextBlock Margin="0,5">
+                                            <Run Text="От: "/>
+                                            <Run Text="{Binding ComplainantName}"/>
+                                        </TextBlock>
+                                        <TextBlock Text="{Binding Reason}" 
+                                                   TextWrapping="Wrap" Margin="0,5"/>
+                                        <TextBlock Text="{Binding CreatedAt, 
+                                            StringFormat='dd.MM.yyyy HH:mm'}" 
+                                                   FontSize="10" Foreground="#999"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="1" 
+                                                Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Button Content="Принять" Width="80" Height="30"
+                                                Style="{StaticResource SuccessButtonStyle}"
+                                                Click="AcceptComplaint_Click" 
+                                                Tag="{Binding ComplaintId}"/>
+                                        <Button Content="Отклонить" Width="80" Height="30"
+                                                Margin="5,0,0,0"
+                                                Style="{StaticResource DangerButtonStyle}"
+                                                Click="RejectComplaint_Click" 
+                                                Tag="{Binding ComplaintId}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </TabItem>
+
+            <TabItem Header="Заявки на автора">
+                <ItemsControl x:Name="AuthorRequestsGrid" Margin="10">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="White" CornerRadius="5" 
+                                    Margin="0,0,0,10" Padding="15">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel>
+                                        <TextBlock FontWeight="Bold">
+                                            <Run Text="Пользователь: "/>
+                                            <Run Text="{Binding UserName}"/>
+                                            <Run Text=" ("/>
+                                            <Run Text="{Binding UserLogin}"/>
+                                            <Run Text=")"/>
+                                        </TextBlock>
+                                        <TextBlock Text="{Binding RequestDate, 
+                                            StringFormat='Запрошено: dd.MM.yyyy'}" 
+                                                   FontSize="12" Margin="0,5,0,0"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="1" 
+                                                Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Button Content="Одобрить" Width="80" Height="30"
+                                                Style="{StaticResource SuccessButtonStyle}"
+                                                Click="AcceptAuthorRequest_Click" 
+                                                Tag="{Binding RequestId}"/>
+                                        <Button Content="Отклонить" Width="80" Height="30"
+                                                Margin="5,0,0,0"
+                                                Style="{StaticResource DangerButtonStyle}"
+                                                Click="RejectAuthorRequest_Click" 
+                                                Tag="{Binding RequestId}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </TabItem>
+
+            <TabItem Header="Апелляции">
+                <ItemsControl x:Name="AppealsGrid" Margin="10">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="White" CornerRadius="5" 
+                                    Margin="0,0,0,10" Padding="15">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel>
+                                        <TextBlock FontWeight="Bold">
+                                            <Run Text="Пользователь: "/>
+                                            <Run Text="{Binding UserName}"/>
+                                        </TextBlock>
+                                        <TextBlock Margin="0,5">
+                                            <Run Text="Тип: "/>
+                                            <Run Text="{Binding TargetType}"/>
+                                            <Run Text=" | ID: "/>
+                                            <Run Text="{Binding TargetId}"/>
+                                        </TextBlock>
+                                        <TextBlock Text="{Binding Reason}" 
+                                                   TextWrapping="Wrap" Margin="0,5"/>
+                                        <TextBlock Text="{Binding RequestDate, 
+                                            StringFormat='dd.MM.yyyy'}" 
+                                                   FontSize="10" Foreground="#999"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="1" 
+                                                Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Button Content="Разморозить" Width="100" Height="30"
+                                                Style="{StaticResource SuccessButtonStyle}"
+                                                Click="AcceptAppeal_Click" 
+                                                Tag="{Binding RequestId}"/>
+                                        <Button Content="Отклонить" Width="80" Height="30"
+                                                Margin="5,0,0,0"
+                                                Style="{StaticResource DangerButtonStyle}"
+                                                Click="RejectAppeal_Click" 
+                                                Tag="{Binding RequestId}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </TabItem>
+
+            <TabItem Header="Пользователи">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBox x:Name="txtUserSearch" Grid.Row="0" Height="32" 
+                             Padding="10,0" Margin="0,0,0,10"
+                             TextChanged="UserSearch_TextChanged"/>
+
+                    <ScrollViewer Grid.Row="1">
+                        <ItemsControl x:Name="UsersGrid">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="White" CornerRadius="5" 
+                                            Margin="0,0,0,5" Padding="10">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <StackPanel>
+                                                <TextBlock FontWeight="Bold">
+                                                    <Run Text="{Binding DisplayName}"/>
+                                                    <Run Text=" (@"/>
+                                                    <Run Text="{Binding Login}"/>
+                                                    <Run Text=")"/>
+                                                </TextBlock>
+                                                <TextBlock Text="{Binding Email}" FontSize="11"/>
+                                                <TextBlock Margin="0,5,0,0">
+                                                    <Run Text="Роль: "/>
+                                                    <Run Text="{Binding RoleName}"/>
+                                                    <Run Text=" | Статус: "/>
+                                                    <Run Text="{Binding Status}"/>
+                                                </TextBlock>
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="1" 
+                                                        Orientation="Horizontal" 
+                                                        VerticalAlignment="Center">
+                                                <ComboBox x:Name="cmbRole" Width="120" Height="30"
+                                                          SelectionChanged="Role_Changed"
+                                                          Tag="{Binding UserId}">
+                                                    <ComboBoxItem Content="Читатель" Tag="1"/>
+                                                    <ComboBoxItem Content="Автор" Tag="2"/>
+                                                    <ComboBoxItem Content="Администратор" Tag="3"/>
+                                                </ComboBox>
+                                                <Button Content="Сброс пароля" 
+                                                        Width="100" Height="30" Margin="5,0,0,0"
+                                                        Style="{StaticResource WarningButtonStyle}"
+                                                        Click="ResetPassword_Click" 
+                                                        Tag="{Binding UserId}"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Page>

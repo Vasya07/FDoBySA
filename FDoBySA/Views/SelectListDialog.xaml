@@ -1,0 +1,32 @@
+﻿<Window x:Class="FDoBySA.Views.SelectListDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Добавить в список" Height="350" Width="350"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Выберите список для добавления книги" 
+                   FontSize="14" FontWeight="Bold" Margin="0,0,0,20"
+                   TextWrapping="Wrap" TextAlignment="Center"/>
+
+        <ListBox x:Name="listStatus" Grid.Row="1" Height="140" Margin="0,0,0,20">
+            <ListBoxItem Content="Читаю" Tag="Читаю"/>
+            <ListBoxItem Content="В планах" Tag="В планах"/>
+            <ListBoxItem Content="Прочитано" Tag="Прочитано"/>
+            <ListBoxItem Content="Заброшено" Tag="Заброшено"/>
+        </ListBox>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center"/>
+        <Button Content="Добавить" Height="NaN" Margin="45,55,165,5"
+                    Style="{StaticResource SuccessButtonStyle}" Click="Add_Click" Grid.Row="3"/>
+        <Button Content="Отмена" Height="NaN"
+                    Style="{StaticResource ActionButtonStyle}" Click="Cancel_Click" Margin="162,55,48,5" Grid.Row="3"/>
+    </Grid>
+</Window>
