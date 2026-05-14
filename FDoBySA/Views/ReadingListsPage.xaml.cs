@@ -14,6 +14,15 @@ namespace FDoBySA.Views
         public ReadingListsPage()
         {
             InitializeComponent();
+
+            if (!UserSession.IsAuthenticated)
+            {
+                MessageBox.Show("Авторизуйтесь для просмотра списков книг",
+                    "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
+                NavigationService?.GoBack();
+                return;
+            }
+
             LoadBooks();
 
             _searchTimer = new System.Windows.Threading.DispatcherTimer
@@ -29,102 +38,128 @@ namespace FDoBySA.Views
 
         private void LoadBooks()
         {
-            if (!UserSession.IsAuthenticated)
+            try
             {
-                NavigationService?.Navigate(new LoginWindow());
-                return;
+                if (BooksGrid == null || txtEmpty == null) return;
+
+                var query = from rl in Core.Context.ReadingLists
+                            where rl.UserId == UserSession.CurrentUser.UserId
+                            where rl.Status == _currentStatus
+                            join b in Core.Context.Books on rl.BookId equals b.BookId
+                            where !b.IsFrozen
+                            select new
+                            {
+                                BookId = b.BookId,
+                                Title = b.Title,
+                                CoverPath = b.CoverPath,
+                                AuthorName = b.Users.DisplayName,
+                                Status = rl.Status,
+                                AvgRating = b.Reviews.Where(r => !r.IsFrozen)
+                                            .Average(r => (double?)r.Rating) ?? 0
+                            };
+
+                string search = txtSearch?.Text.Trim() ?? "";
+                if (!string.IsNullOrEmpty(search))
+                {
+                    query = query.Where(b => b.Title.Contains(search) ||
+                                             b.AuthorName.Contains(search));
+                }
+
+                string sort = (cmbSort?.SelectedItem as ComboBoxItem)?.Content.ToString();
+                if (sort == "По оценке")
+                    query = query.OrderByDescending(b => b.AvgRating);
+                else
+                    query = query.OrderBy(b => b.Title);
+
+                var books = query.ToList();
+
+                if (books.Count == 0)
+                {
+                    BooksGrid.Visibility = Visibility.Collapsed;
+                    txtEmpty.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    BooksGrid.Visibility = Visibility.Visible;
+                    txtEmpty.Visibility = Visibility.Collapsed;
+                    BooksGrid.ItemsSource = books;
+                }
             }
-
-            var query = from rl in Core.Context.ReadingLists
-                        where rl.UserId == UserSession.CurrentUser.UserId
-                        where rl.Status == _currentStatus
-                        join b in Core.Context.Books on rl.BookId equals b.BookId
-                        where !b.IsFrozen
-                        select new
-                        {
-                            BookId = b.BookId,
-                            Title = b.Title,
-                            CoverPath = b.CoverPath,
-                            AuthorName = b.Users.DisplayName,
-                            Status = rl.Status,
-                            AvgRating = b.Reviews.Where(r => !r.IsFrozen)
-                                        .Average(r => (double?)r.Rating) ?? 0
-                        };
-
-            string search = txtSearch.Text.Trim();
-            if (!string.IsNullOrEmpty(search))
+            catch (Exception ex)
             {
-                query = query.Where(b => b.Title.Contains(search) ||
-                                         b.AuthorName.Contains(search));
-            }
-
-            string sort = (cmbSort.SelectedItem as ComboBoxItem)?.Content.ToString();
-            if (sort == "По оценке")
-                query = query.OrderByDescending(b => b.AvgRating);
-            else
-                query = query.OrderBy(b => b.Title);
-
-            var books = query.ToList();
-
-            if (books.Count == 0)
-            {
-                BooksGrid.Visibility = Visibility.Collapsed;
-                txtEmpty.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                BooksGrid.Visibility = Visibility.Visible;
-                txtEmpty.Visibility = Visibility.Collapsed;
-                BooksGrid.ItemsSource = books;
+                MessageBox.Show($"Ошибка загрузки списков: {ex.Message}",
+                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (e.AddedItems.Count > 0)
+            try
             {
-                var tabItem = e.AddedItems[0] as TabItem;
-                _currentStatus = tabItem.Tag.ToString();
-                LoadBooks();
+                if (e.AddedItems.Count > 0 && e.AddedItems[0] is TabItem tabItem)
+                {
+                    _currentStatus = tabItem.Tag.ToString();
+                    LoadBooks();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка переключения вкладки: {ex.Message}",
+                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void ComboBox_Loaded(object sender, RoutedEventArgs e)
         {
-            var combo = sender as ComboBox;
-            if (combo?.DataContext != null)
+            try
             {
-                dynamic item = combo.DataContext;
-                string currentStatus = item.Status;
-
-                foreach (ComboBoxItem cbItem in combo.Items)
+                var combo = sender as ComboBox;
+                if (combo?.DataContext != null)
                 {
-                    if (cbItem.Content.ToString() == currentStatus)
+                    dynamic item = combo.DataContext;
+                    string currentStatus = item.Status;
+
+                    foreach (ComboBoxItem cbItem in combo.Items)
                     {
-                        combo.SelectedItem = cbItem;
-                        break;
+                        if (cbItem.Content.ToString() == currentStatus)
+                        {
+                            combo.SelectedItem = cbItem;
+                            break;
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ComboBox error: {ex.Message}");
             }
         }
 
         private void Status_Changed(object sender, SelectionChangedEventArgs e)
         {
-            var combo = sender as ComboBox;
-            if (combo == null || combo.SelectedItem == null) return;
-
-            int bookId = (int)combo.Tag;
-            string newStatus = (combo.SelectedItem as ComboBoxItem)?.Content.ToString();
-
-            var readingList = Core.Context.ReadingLists
-                .FirstOrDefault(rl => rl.UserId == UserSession.CurrentUser.UserId &&
-                                      rl.BookId == bookId);
-
-            if (readingList != null && readingList.Status != newStatus)
+            try
             {
-                readingList.Status = newStatus;
-                Core.Context.SaveChanges();
-                LoadBooks();
+                var combo = sender as ComboBox;
+                if (combo == null || combo.SelectedItem == null) return;
+
+                int bookId = (int)combo.Tag;
+                string newStatus = (combo.SelectedItem as ComboBoxItem)?.Content.ToString();
+
+                var readingList = Core.Context.ReadingLists
+                    .FirstOrDefault(rl => rl.UserId == UserSession.CurrentUser.UserId &&
+                                          rl.BookId == bookId);
+
+                if (readingList != null && readingList.Status != newStatus)
+                {
+                    readingList.Status = newStatus;
+                    Core.Context.SaveChanges();
+                    LoadBooks();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка изменения статуса: {ex.Message}",
+                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -145,8 +180,16 @@ namespace FDoBySA.Views
 
         private void ReadBook_Click(object sender, RoutedEventArgs e)
         {
-            int bookId = (int)((Button)sender).Tag;
-            NavigationService?.Navigate(new BookPage(bookId));
+            try
+            {
+                int bookId = (int)((Button)sender).Tag;
+                NavigationService?.Navigate(new BookPage(bookId));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка открытия книги: {ex.Message}",
+                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }

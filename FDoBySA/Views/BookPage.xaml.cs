@@ -170,6 +170,14 @@ namespace FDoBySA.Views
                 return;
             }
 
+            if (UserSession.IsFrozen)
+            {
+                MessageBox.Show("Ваш аккаунт заморожен. Вы не можете отправлять жалобы.\n\n" +
+                    "Подайте апелляцию в профиле для разморозки аккаунта",
+                    "Доступ запрещен", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             var dialog = new ComplaintDialog("Book", _bookId);
             dialog.Owner = Window.GetWindow(this);
             dialog.ShowDialog();
@@ -181,6 +189,14 @@ namespace FDoBySA.Views
             {
                 MessageBox.Show("Авторизуйтесь, чтобы подать жалобу",
                     "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (UserSession.IsFrozen)
+            {
+                MessageBox.Show("Ваш аккаунт заморожен. Вы не можете отправлять жалобы.\n\n" +
+                    "Подайте апелляцию в профиле для разморозки аккаунта",
+                    "Доступ запрещен", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 

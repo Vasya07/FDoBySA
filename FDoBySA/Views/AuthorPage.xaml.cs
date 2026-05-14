@@ -78,20 +78,45 @@ namespace FDoBySA.Views
             NavigationService?.Navigate(new BookPage(bookId));
         }
 
-        private void DeleteBook_Click(object sender, RoutedEventArgs e)
+        private async void DeleteBook_Click(object sender, RoutedEventArgs e)
         {
             int bookId = (int)((Button)sender).Tag;
+            var reviewsCount = Core.Context.Reviews.Count(r => r.BookId == bookId);
+            var readingListsCount = Core.Context.ReadingLists.Count(rl => rl.BookId == bookId);
+            var complaintsCount = Core.Context.Complaints.Count(c => c.TargetType == "Book" && c.TargetId == bookId);
 
-            var result = MessageBox.Show("Удалить эту книгу?\n\nЭто действие нельзя отменить",
-                "Подтверждение", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            string message = $"Удалить книгу?\n\nЭто действие нельзя отменить.\n";
+
+            message += "\n\nПродолжить?";
+
+            var result = MessageBox.Show(message, "Подтверждение удаления",
+                MessageBoxButton.YesNo, MessageBoxImage.Warning);
 
             if (result == MessageBoxResult.Yes)
             {
-                var book = Core.Context.Books.First(b => b.BookId == bookId);
-                Core.Context.Books.Remove(book);
-                Core.Context.SaveChanges();
+                try
+                {
+                    var reviews = Core.Context.Reviews.Where(r => r.BookId == bookId);
+                    Core.Context.Reviews.RemoveRange(reviews);
 
-                LoadBooks();
+                    var readingLists = Core.Context.ReadingLists.Where(rl => rl.BookId == bookId);
+                    Core.Context.ReadingLists.RemoveRange(readingLists);
+
+                    var complaints = Core.Context.Complaints
+                        .Where(c => c.TargetType == "Book" && c.TargetId == bookId);
+                    Core.Context.Complaints.RemoveRange(complaints);
+
+                    var book = Core.Context.Books.First(b => b.BookId == bookId);
+                    Core.Context.Books.Remove(book);
+
+                    await Core.Context.SaveChangesAsync();
+                    LoadBooks();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка при удалении: {ex.Message}", "Ошибка",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 

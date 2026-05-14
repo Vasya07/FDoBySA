@@ -14,6 +14,7 @@
                    Margin="0,0,0,20"/>
 
         <TabControl Grid.Row="1">
+            <!-- Вкладка: Жалобы -->
             <TabItem Header="Жалобы">
                 <ItemsControl x:Name="ComplaintsGrid" Margin="10">
                     <ItemsControl.ItemTemplate>
@@ -29,17 +30,17 @@
                                     <StackPanel>
                                         <TextBlock FontWeight="Bold">
                                             <Run Text="Тип: "/>
-                                            <Run Text="{Binding TargetType}"/>
+                                            <Run Text="{Binding TargetType, Mode=OneWay}"/>
                                             <Run Text=" | ID: "/>
-                                            <Run Text="{Binding TargetId}"/>
+                                            <Run Text="{Binding TargetId, Mode=OneWay}"/>
                                         </TextBlock>
                                         <TextBlock Margin="0,5">
                                             <Run Text="От: "/>
-                                            <Run Text="{Binding ComplainantName}"/>
+                                            <Run Text="{Binding ComplainantName, Mode=OneWay}"/>
                                         </TextBlock>
-                                        <TextBlock Text="{Binding Reason}" 
+                                        <TextBlock Text="{Binding Reason, Mode=OneWay}" 
                                                    TextWrapping="Wrap" Margin="0,5"/>
-                                        <TextBlock Text="{Binding CreatedAt, 
+                                        <TextBlock Text="{Binding CreatedAt, Mode=OneWay, 
                                             StringFormat='dd.MM.yyyy HH:mm'}" 
                                                    FontSize="10" Foreground="#999"/>
                                     </StackPanel>
@@ -49,12 +50,12 @@
                                         <Button Content="Принять" Width="80" Height="30"
                                                 Style="{StaticResource SuccessButtonStyle}"
                                                 Click="AcceptComplaint_Click" 
-                                                Tag="{Binding ComplaintId}"/>
+                                                Tag="{Binding ComplaintId, Mode=OneWay}"/>
                                         <Button Content="Отклонить" Width="80" Height="30"
                                                 Margin="5,0,0,0"
                                                 Style="{StaticResource DangerButtonStyle}"
                                                 Click="RejectComplaint_Click" 
-                                                Tag="{Binding ComplaintId}"/>
+                                                Tag="{Binding ComplaintId, Mode=OneWay}"/>
                                     </StackPanel>
                                 </Grid>
                             </Border>
@@ -63,6 +64,7 @@
                 </ItemsControl>
             </TabItem>
 
+            <!-- Вкладка: Заявки на автора -->
             <TabItem Header="Заявки на автора">
                 <ItemsControl x:Name="AuthorRequestsGrid" Margin="10">
                     <ItemsControl.ItemTemplate>
@@ -78,12 +80,12 @@
                                     <StackPanel>
                                         <TextBlock FontWeight="Bold">
                                             <Run Text="Пользователь: "/>
-                                            <Run Text="{Binding UserName}"/>
+                                            <Run Text="{Binding UserName, Mode=OneWay}"/>
                                             <Run Text=" ("/>
-                                            <Run Text="{Binding UserLogin}"/>
+                                            <Run Text="{Binding UserLogin, Mode=OneWay}"/>
                                             <Run Text=")"/>
                                         </TextBlock>
-                                        <TextBlock Text="{Binding RequestDate, 
+                                        <TextBlock Text="{Binding RequestDate, Mode=OneWay, 
                                             StringFormat='Запрошено: dd.MM.yyyy'}" 
                                                    FontSize="12" Margin="0,5,0,0"/>
                                     </StackPanel>
@@ -93,12 +95,12 @@
                                         <Button Content="Одобрить" Width="80" Height="30"
                                                 Style="{StaticResource SuccessButtonStyle}"
                                                 Click="AcceptAuthorRequest_Click" 
-                                                Tag="{Binding RequestId}"/>
+                                                Tag="{Binding RequestId, Mode=OneWay}"/>
                                         <Button Content="Отклонить" Width="80" Height="30"
                                                 Margin="5,0,0,0"
                                                 Style="{StaticResource DangerButtonStyle}"
                                                 Click="RejectAuthorRequest_Click" 
-                                                Tag="{Binding RequestId}"/>
+                                                Tag="{Binding RequestId, Mode=OneWay}"/>
                                     </StackPanel>
                                 </Grid>
                             </Border>
@@ -107,6 +109,7 @@
                 </ItemsControl>
             </TabItem>
 
+            <!-- Вкладка: Апелляции -->
             <TabItem Header="Апелляции">
                 <ItemsControl x:Name="AppealsGrid" Margin="10">
                     <ItemsControl.ItemTemplate>
@@ -122,17 +125,17 @@
                                     <StackPanel>
                                         <TextBlock FontWeight="Bold">
                                             <Run Text="Пользователь: "/>
-                                            <Run Text="{Binding UserName}"/>
+                                            <Run Text="{Binding UserName, Mode=OneWay}"/>
                                         </TextBlock>
                                         <TextBlock Margin="0,5">
                                             <Run Text="Тип: "/>
-                                            <Run Text="{Binding TargetType}"/>
+                                            <Run Text="{Binding TargetType, Mode=OneWay}"/>
                                             <Run Text=" | ID: "/>
-                                            <Run Text="{Binding TargetId}"/>
+                                            <Run Text="{Binding TargetId, Mode=OneWay}"/>
                                         </TextBlock>
-                                        <TextBlock Text="{Binding Reason}" 
+                                        <TextBlock Text="{Binding Reason, Mode=OneWay}" 
                                                    TextWrapping="Wrap" Margin="0,5"/>
-                                        <TextBlock Text="{Binding RequestDate, 
+                                        <TextBlock Text="{Binding RequestDate, Mode=OneWay, 
                                             StringFormat='dd.MM.yyyy'}" 
                                                    FontSize="10" Foreground="#999"/>
                                     </StackPanel>
@@ -142,12 +145,12 @@
                                         <Button Content="Разморозить" Width="100" Height="30"
                                                 Style="{StaticResource SuccessButtonStyle}"
                                                 Click="AcceptAppeal_Click" 
-                                                Tag="{Binding RequestId}"/>
+                                                Tag="{Binding RequestId, Mode=OneWay}"/>
                                         <Button Content="Отклонить" Width="80" Height="30"
                                                 Margin="5,0,0,0"
                                                 Style="{StaticResource DangerButtonStyle}"
                                                 Click="RejectAppeal_Click" 
-                                                Tag="{Binding RequestId}"/>
+                                                Tag="{Binding RequestId, Mode=OneWay}"/>
                                     </StackPanel>
                                 </Grid>
                             </Border>
@@ -156,6 +159,7 @@
                 </ItemsControl>
             </TabItem>
 
+            <!-- Вкладка: Пользователи -->
             <TabItem Header="Пользователи">
                 <Grid Margin="10">
                     <Grid.RowDefinitions>
@@ -181,17 +185,17 @@
 
                                             <StackPanel>
                                                 <TextBlock FontWeight="Bold">
-                                                    <Run Text="{Binding DisplayName}"/>
+                                                    <Run Text="{Binding DisplayName, Mode=OneWay}"/>
                                                     <Run Text=" (@"/>
-                                                    <Run Text="{Binding Login}"/>
+                                                    <Run Text="{Binding Login, Mode=OneWay}"/>
                                                     <Run Text=")"/>
                                                 </TextBlock>
-                                                <TextBlock Text="{Binding Email}" FontSize="11"/>
+                                                <TextBlock Text="{Binding Email, Mode=OneWay}" FontSize="11"/>
                                                 <TextBlock Margin="0,5,0,0">
                                                     <Run Text="Роль: "/>
-                                                    <Run Text="{Binding RoleName}"/>
+                                                    <Run Text="{Binding RoleName, Mode=OneWay}"/>
                                                     <Run Text=" | Статус: "/>
-                                                    <Run Text="{Binding Status}"/>
+                                                    <Run Text="{Binding Status, Mode=OneWay}"/>
                                                 </TextBlock>
                                             </StackPanel>
 
@@ -200,7 +204,7 @@
                                                         VerticalAlignment="Center">
                                                 <ComboBox x:Name="cmbRole" Width="120" Height="30"
                                                           SelectionChanged="Role_Changed"
-                                                          Tag="{Binding UserId}">
+                                                          Tag="{Binding UserId, Mode=OneWay}">
                                                     <ComboBoxItem Content="Читатель" Tag="1"/>
                                                     <ComboBoxItem Content="Автор" Tag="2"/>
                                                     <ComboBoxItem Content="Администратор" Tag="3"/>
@@ -209,7 +213,7 @@
                                                         Width="100" Height="30" Margin="5,0,0,0"
                                                         Style="{StaticResource WarningButtonStyle}"
                                                         Click="ResetPassword_Click" 
-                                                        Tag="{Binding UserId}"/>
+                                                        Tag="{Binding UserId, Mode=OneWay}"/>
                                             </StackPanel>
                                         </Grid>
                                     </Border>
