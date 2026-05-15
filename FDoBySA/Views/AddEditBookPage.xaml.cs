@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
+using Microsoft.Win32;
 using FDoBySA.Helpers;
 
 namespace FDoBySA.Views
@@ -10,6 +13,7 @@ namespace FDoBySA.Views
     {
         private int? _bookId;
         private List<GenreViewModel> _genres;
+        private string _selectedCoverPath = null;
 
         public AddEditBookPage(int? bookId = null)
         {
@@ -53,6 +57,51 @@ namespace FDoBySA.Views
             txtTitle.Text = book.Title;
             txtDescription.Text = book.Description;
             txtContent.Text = book.TextContent;
+
+            if (!string.IsNullOrEmpty(book.CoverPath))
+            {
+                _selectedCoverPath = book.CoverPath;
+                txtCoverPath.Text = Path.GetFileName(book.CoverPath);
+
+                try
+                {
+                    var fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, book.CoverPath);
+                    if (File.Exists(fullPath))
+                    {
+                        imgPreview.Source = new System.Windows.Media.Imaging.BitmapImage(
+                            new Uri(fullPath, UriKind.Absolute));
+                    }
+                }
+                catch { }
+            }
+        }
+
+        private void SelectCover_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new OpenFileDialog
+            {
+                Title = "Выберите обложку для книги",
+                Filter = "Изображения|*.jpg;*.jpeg;*.png;*.bmp;*.gif|Все файлы|*.*",
+                FilterIndex = 1
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(dialog.FileName);
+                string coversDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Covers");
+
+                if (!Directory.Exists(coversDir))
+                    Directory.CreateDirectory(coversDir);
+
+                string destPath = Path.Combine(coversDir, fileName);
+                File.Copy(dialog.FileName, destPath, true);
+
+                _selectedCoverPath = "Covers/" + fileName;
+                txtCoverPath.Text = fileName;
+
+                imgPreview.Source = new System.Windows.Media.Imaging.BitmapImage(
+                    new Uri(destPath, UriKind.Absolute));
+            }
         }
 
         private void Save_Click(object sender, RoutedEventArgs e)
@@ -83,6 +132,9 @@ namespace FDoBySA.Views
                 book.Title = title;
                 book.Description = description;
                 book.TextContent = content;
+                if (_selectedCoverPath != null)
+                    book.CoverPath = _selectedCoverPath;
+
                 book.Genres.Clear();
             }
             else
@@ -92,6 +144,7 @@ namespace FDoBySA.Views
                     Title = title,
                     Description = description,
                     TextContent = content,
+                    CoverPath = _selectedCoverPath,
                     AuthorId = UserSession.CurrentUser.UserId,
                     IsFrozen = false,
                     CreatedAt = DateTime.Now
@@ -108,6 +161,9 @@ namespace FDoBySA.Views
             }
 
             Core.Context.SaveChanges();
+
+            MessageBox.Show("Книга сохранена!", "Успех",
+                MessageBoxButton.OK, MessageBoxImage.Information);
 
             DialogResult = true;
             Close();

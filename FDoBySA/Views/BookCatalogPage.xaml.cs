@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.IO;
 using FDoBySA.Helpers;
 
 namespace FDoBySA.Views
@@ -53,15 +54,11 @@ namespace FDoBySA.Views
         {
             try
             {
-                if (txtLoading == null || BooksGrid == null)
-                {
-                    return;
-                }
+                if (txtLoading == null || BooksGrid == null) return;
 
                 txtLoading.Visibility = Visibility.Visible;
                 BooksGrid.Visibility = Visibility.Collapsed;
-
-                var query = Core.Context.Books
+                var booksFromDb = Core.Context.Books
                     .Where(b => !b.IsFrozen)
                     .Select(b => new
                     {
@@ -76,29 +73,43 @@ namespace FDoBySA.Views
                         AvgRating = b.Reviews.Where(r => !r.IsFrozen)
                                     .Select(r => (double?)r.Rating).Average() ?? 0,
                         Genres = b.Genres.Select(g => g.GenreName).ToList()
-                    });
+                    })
+                    .ToList();
+
+                string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+                var books = booksFromDb.Select(b => new
+                {
+                    b.BookId,
+                    b.Title,
+                    b.Description,
+                    CoverPath = string.IsNullOrEmpty(b.CoverPath)
+                        ? null
+                        : Path.Combine(baseDir, b.CoverPath.Replace('/', '\\')),
+                    b.TextContent,
+                    b.AuthorId,
+                    b.IsFrozen,
+                    b.AuthorName,
+                    b.AvgRating,
+                    b.Genres
+                }).ToList();
 
                 string search = txtSearch.Text.Trim();
                 if (!string.IsNullOrEmpty(search))
                 {
-                    query = query.Where(b => b.Title.Contains(search) ||
-                                             b.AuthorName.Contains(search));
+                    books = books.Where(b => b.Title.Contains(search) || b.AuthorName.Contains(search)).ToList();
                 }
 
                 if (cmbGenre.SelectedValue is int genreId)
                 {
-                    var genreName = Core.Context.Genres
-                        .First(g => g.GenreId == genreId).GenreName;
-                    query = query.Where(b => b.Genres.Contains(genreName));
+                    var genreName = Core.Context.Genres.First(g => g.GenreId == genreId).GenreName;
+                    books = books.Where(b => b.Genres.Contains(genreName)).ToList();
                 }
 
                 string sort = (cmbSort.SelectedItem as ComboBoxItem)?.Content.ToString();
                 if (sort == "По оценке")
-                    query = query.OrderByDescending(b => b.AvgRating);
+                    books = books.OrderByDescending(b => b.AvgRating).ToList();
                 else
-                    query = query.OrderBy(b => b.Title);
-
-                var books = query.ToList();
+                    books = books.OrderBy(b => b.Title).ToList();
 
                 BooksGrid.ItemsSource = books;
                 txtLoading.Visibility = Visibility.Collapsed;
@@ -156,6 +167,15 @@ namespace FDoBySA.Views
             var dialog = new SelectListDialog(bookId);
             dialog.Owner = Window.GetWindow(this);
             dialog.ShowDialog();
+        }
+
+        private void Image_ImageFailed(object sender, ExceptionRoutedEventArgs e)
+        {
+            var img = sender as Image;
+            if (img != null)
+            {
+                img.Source = null;
+            }
         }
     }
 }

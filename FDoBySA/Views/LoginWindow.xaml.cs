@@ -10,8 +10,6 @@ namespace FDoBySA.Views
         public LoginWindow()
         {
             InitializeComponent();
-            txtLogin.Text = "vasiliy_glotov";
-            txtPassword.Password = "hash_glotov123";
         }
 
         private void Login_Click(object sender, RoutedEventArgs e)

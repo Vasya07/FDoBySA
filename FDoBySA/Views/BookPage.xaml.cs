@@ -40,43 +40,23 @@ namespace FDoBySA.Views
             BookAuthor.Text = _book.Users.DisplayName;
             BookDescription.Text = _book.Description ?? "Нет описания";
             BookContent.Text = _book.TextContent;
-
             if (!string.IsNullOrEmpty(_book.CoverPath))
             {
                 try
                 {
-                    BookCover.Source = new System.Windows.Media.Imaging.BitmapImage(
-                        new Uri(_book.CoverPath, UriKind.Relative));
+                    string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+                    string fullPath = System.IO.Path.Combine(baseDir, _book.CoverPath.Replace('/', '\\'));
+                    if (System.IO.File.Exists(fullPath))
+                    {
+                        var bitmap = new System.Windows.Media.Imaging.BitmapImage();
+                        bitmap.BeginInit();
+                        bitmap.UriSource = new Uri(fullPath, UriKind.Absolute);
+                        bitmap.CacheOption = System.Windows.Media.Imaging.BitmapCacheOption.OnLoad;
+                        bitmap.EndInit();
+                        BookCover.Source = bitmap;
+                    }
                 }
                 catch { }
-            }
-
-            var avgRating = Core.Context.Reviews
-                .Where(r => r.BookId == _bookId && !r.IsFrozen)
-                .Average(r => (double?)r.Rating) ?? 0;
-            BookRating.Text = avgRating.ToString("F1");
-
-            var genres = Core.Context.Books
-                .Where(b => b.BookId == _bookId)
-                .SelectMany(b => b.Genres.Select(g => g.GenreName))
-                .ToList();
-
-            foreach (var genre in genres)
-            {
-                var genreBadge = new Border
-                {
-                    Background = new System.Windows.Media.SolidColorBrush(
-                        System.Windows.Media.Color.FromRgb(224, 224, 224)),
-                    CornerRadius = new System.Windows.CornerRadius(3),
-                    Padding = new Thickness(8, 3, 8, 3),
-                    Margin = new Thickness(0, 0, 5, 5)
-                };
-                genreBadge.Child = new TextBlock
-                {
-                    Text = genre,
-                    FontSize = 11
-                };
-                GenresPanel.Children.Add(genreBadge);
             }
         }
 
