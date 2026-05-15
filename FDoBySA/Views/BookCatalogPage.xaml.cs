@@ -9,11 +9,13 @@ namespace FDoBySA.Views
 {
     public partial class BookCatalogPage : Page
     {
+        public static BookCatalogPage Current { get; private set; }
         private System.Windows.Threading.DispatcherTimer _searchTimer;
 
         public BookCatalogPage()
         {
             InitializeComponent();
+            Current = this;
             LoadGenres();
             LoadBooks();
 
@@ -27,7 +29,10 @@ namespace FDoBySA.Views
                 LoadBooks();
             };
         }
-
+        public void RefreshBooks()
+        {
+            LoadBooks();
+        }
         private void LoadGenres()
         {
             try
@@ -58,6 +63,7 @@ namespace FDoBySA.Views
 
                 txtLoading.Visibility = Visibility.Visible;
                 BooksGrid.Visibility = Visibility.Collapsed;
+
                 var booksFromDb = Core.Context.Books
                     .Where(b => !b.IsFrozen)
                     .Select(b => new

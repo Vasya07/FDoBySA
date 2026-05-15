@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -41,13 +42,12 @@ namespace FDoBySA.Views
             try
             {
                 if (BooksGrid == null || txtEmpty == null) return;
-
                 var query = from rl in Core.Context.ReadingLists
                             where rl.UserId == UserSession.CurrentUser.UserId
                             where rl.Status == _currentStatus
                             join b in Core.Context.Books on rl.BookId equals b.BookId
                             where !b.IsFrozen
-                            select new
+                            select new BookListItem
                             {
                                 BookId = b.BookId,
                                 Title = b.Title,
@@ -71,7 +71,19 @@ namespace FDoBySA.Views
                 else
                     query = query.OrderBy(b => b.Title);
 
-                var books = query.ToList();
+                var booksFromDb = query.ToList();
+                string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+                var books = booksFromDb.Select(b => new BookListItem
+                {
+                    BookId = b.BookId,
+                    Title = b.Title,
+                    CoverPath = string.IsNullOrEmpty(b.CoverPath)
+                        ? null
+                        : Path.Combine(baseDir, b.CoverPath.Replace('/', '\\')),
+                    AuthorName = b.AuthorName,
+                    Status = b.Status,
+                    AvgRating = b.AvgRating
+                }).ToList();
 
                 if (books.Count == 0)
                 {
@@ -191,5 +203,24 @@ namespace FDoBySA.Views
                     "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        private void Image_ImageFailed(object sender, ExceptionRoutedEventArgs e)
+        {
+            var img = sender as Image;
+            if (img != null)
+            {
+                img.Source = null;
+            }
+        }
+    }
+
+    public class BookListItem
+    {
+        public int BookId { get; set; }
+        public string Title { get; set; }
+        public string CoverPath { get; set; }
+        public string AuthorName { get; set; }
+        public string Status { get; set; }
+        public double AvgRating { get; set; }
     }
 }

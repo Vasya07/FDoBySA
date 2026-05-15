@@ -61,7 +61,8 @@
                                         Width="180" Height="240">
                                     <Image Source="{Binding CoverPath}" 
                                            Width="180" Height="240" 
-                                           Stretch="UniformToFill"/>
+                                           Stretch="UniformToFill"
+                                           ImageFailed="Image_ImageFailed"/>
                                 </Border>
 
                                 <TextBlock Text="{Binding Title}" 

@@ -79,7 +79,7 @@ namespace FDoBySA.Views
                 var user = new Users
                 {
                     Login = login,
-                    PasswordHash = PasswordHelper.HashPassword(password),
+                    PasswordHash = password,
                     Email = email,
                     DisplayName = displayName,
                     RoleId = 1,

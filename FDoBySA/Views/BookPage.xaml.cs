@@ -117,10 +117,6 @@ namespace FDoBySA.Views
 
             Core.Context.Reviews.Add(review);
             Core.Context.SaveChanges();
-
-            MessageBox.Show("Отзыв добавлен!", "Успех",
-                MessageBoxButton.OK, MessageBoxImage.Information);
-
             txtReview.Clear();
             cmbRating.SelectedIndex = 4;
             LoadReviews();
@@ -198,8 +194,10 @@ namespace FDoBySA.Views
                 _book.FrozenReason = "Заморожено администратором";
                 Core.Context.SaveChanges();
 
-                MessageBox.Show("Книга заморожена", "Успех",
-                    MessageBoxButton.OK, MessageBoxImage.Information);
+                if (BookCatalogPage.Current != null)
+                {
+                    BookCatalogPage.Current.RefreshBooks();
+                }
 
                 NavigationService?.GoBack();
             }
@@ -217,10 +215,6 @@ namespace FDoBySA.Views
             {
                 review.IsFrozen = true;
                 Core.Context.SaveChanges();
-
-                MessageBox.Show("Отзыв заморожен", "Успех",
-                    MessageBoxButton.OK, MessageBoxImage.Information);
-
                 LoadReviews();
             }
         }

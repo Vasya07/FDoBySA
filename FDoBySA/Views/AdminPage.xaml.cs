@@ -46,12 +46,6 @@ namespace FDoBySA.Views
                     .ToList();
 
                 ComplaintsGrid.ItemsSource = complaints;
-
-                if (complaints.Count == 0)
-                {
-                    MessageBox.Show("Нет активных жалоб", "Ошибка",
-                    MessageBoxButton.OK, MessageBoxImage.Information);
-                }
             }
             catch (Exception ex)
             {
