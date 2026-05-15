@@ -14,7 +14,6 @@
                    Margin="0,0,0,20"/>
 
         <TabControl Grid.Row="1">
-            <!-- Вкладка: Жалобы -->
             <TabItem Header="Жалобы">
                 <ItemsControl x:Name="ComplaintsGrid" Margin="10">
                     <ItemsControl.ItemTemplate>
@@ -64,7 +63,6 @@
                 </ItemsControl>
             </TabItem>
 
-            <!-- Вкладка: Заявки на автора -->
             <TabItem Header="Заявки на автора">
                 <ItemsControl x:Name="AuthorRequestsGrid" Margin="10">
                     <ItemsControl.ItemTemplate>
@@ -109,7 +107,6 @@
                 </ItemsControl>
             </TabItem>
 
-            <!-- Вкладка: Апелляции -->
             <TabItem Header="Апелляции">
                 <ItemsControl x:Name="AppealsGrid" Margin="10">
                     <ItemsControl.ItemTemplate>
@@ -159,7 +156,48 @@
                 </ItemsControl>
             </TabItem>
 
-            <!-- Вкладка: Пользователи -->
+            <TabItem Header="Замороженные книги">
+                <ItemsControl x:Name="FrozenBooksGrid" Margin="10">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="White" CornerRadius="5" 
+                        Margin="0,0,0,10" Padding="15">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel>
+                                        <TextBlock FontWeight="Bold">
+                                <Run Text="Книга: "/>
+                                <Run Text="{Binding Title, Mode=OneWay}"/>
+                                        </TextBlock>
+                                        <TextBlock Margin="0,5">
+                                <Run Text="Автор: "/>
+                                <Run Text="{Binding AuthorName, Mode=OneWay}"/>
+                                        </TextBlock>
+                                        <TextBlock Text="{Binding FrozenReason, Mode=OneWay}" 
+                                       TextWrapping="Wrap" Margin="0,5"/>
+                                        <TextBlock Text="{Binding CreatedAt, Mode=OneWay, 
+                                StringFormat='Дата публикации: dd.MM.yyyy'}" 
+                                       FontSize="10" Foreground="#999"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="1" 
+                                    Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Button Content="Разморозить" Width="100" Height="30"
+                                    Style="{StaticResource SuccessButtonStyle}"
+                                    Click="UnfreezeBook_Click" 
+                                    Tag="{Binding BookId, Mode=OneWay}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </TabItem>
+
             <TabItem Header="Пользователи">
                 <Grid Margin="10">
                     <Grid.RowDefinitions>

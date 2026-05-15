@@ -24,25 +24,40 @@ namespace FDoBySA.Views
             LoadAuthorRequests();
             LoadAppeals();
             LoadUsers();
+            LoadFrozenBooks();
         }
 
         private void LoadComplaints()
         {
-            var complaints = Core.Context.Complaints
-                .Where(c => !c.IsResolved)
-                .Select(c => new
-                {
-                    c.ComplaintId,
-                    c.TargetType,
-                    c.TargetId,
-                    c.Reason,
-                    c.CreatedAt,
-                    ComplainantName = c.Users.DisplayName
-                })
-                .OrderByDescending(c => c.CreatedAt)
-                .ToList();
+            try
+            {
+                var complaints = Core.Context.Complaints
+                    .Where(c => !c.IsResolved)
+                    .Select(c => new
+                    {
+                        c.ComplaintId,
+                        c.TargetType,
+                        c.TargetId,
+                        c.Reason,
+                        c.CreatedAt,
+                        ComplainantName = c.Users.DisplayName
+                    })
+                    .OrderByDescending(c => c.CreatedAt)
+                    .ToList();
 
-            ComplaintsGrid.ItemsSource = complaints;
+                ComplaintsGrid.ItemsSource = complaints;
+
+                if (complaints.Count == 0)
+                {
+                    MessageBox.Show("Нет активных жалоб", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка загрузки жалоб: {ex.Message}", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void LoadAuthorRequests()
@@ -104,32 +119,90 @@ namespace FDoBySA.Views
         private void AcceptComplaint_Click(object sender, RoutedEventArgs e)
         {
             int complaintId = (int)((Button)sender).Tag;
-            var complaint = Core.Context.Complaints.First(c => c.ComplaintId == complaintId);
-            complaint.IsResolved = true;
 
-            if (complaint.TargetType == "Book")
+            try
             {
-                var book = Core.Context.Books.First(b => b.BookId == complaint.TargetId);
-                book.IsFrozen = true;
-                book.FrozenReason = $"Заморожено по жалобе #{complaintId}";
-            }
-            else if (complaint.TargetType == "Review")
-            {
-                var review = Core.Context.Reviews.First(r => r.ReviewId == complaint.TargetId);
-                review.IsFrozen = true;
-            }
+                var complaint = Core.Context.Complaints.FirstOrDefault(c => c.ComplaintId == complaintId);
 
-            Core.Context.SaveChanges();
-            LoadComplaints();
+                if (complaint == null)
+                {
+                    MessageBox.Show("Жалоба не найдена. Возможно, она уже была обработана",
+                        "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    LoadComplaints();
+                    return;
+                }
+
+                complaint.IsResolved = true;
+
+                if (complaint.TargetType == "Book")
+                {
+                    var book = Core.Context.Books.FirstOrDefault(b => b.BookId == complaint.TargetId);
+                    if (book != null)
+                    {
+                        book.IsFrozen = true;
+                        book.FrozenReason = $"Заморожено по жалобе #{complaintId}";
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Книга с ID {complaint.TargetId} не найдена. Возможно, она уже была удалена",
+                            "Предупреждение", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
+                }
+                else if (complaint.TargetType == "Review")
+                {
+                    var review = Core.Context.Reviews.FirstOrDefault(r => r.ReviewId == complaint.TargetId);
+                    if (review != null)
+                    {
+                        review.IsFrozen = true;
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Отзыв не найден. Возможно, он уже был удалён",
+                            "Предупреждение", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
+                }
+
+                Core.Context.SaveChanges();
+                LoadComplaints();
+
+                MessageBox.Show("Жалоба обработана", "Успех",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при обработке жалобы: {ex.Message}", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void RejectComplaint_Click(object sender, RoutedEventArgs e)
         {
             int complaintId = (int)((Button)sender).Tag;
-            var complaint = Core.Context.Complaints.First(c => c.ComplaintId == complaintId);
-            complaint.IsResolved = true;
-            Core.Context.SaveChanges();
-            LoadComplaints();
+
+            try
+            {
+                var complaint = Core.Context.Complaints.FirstOrDefault(c => c.ComplaintId == complaintId);
+
+                if (complaint == null)
+                {
+                    MessageBox.Show("Жалоба не найдена. Возможно, она уже была обработана",
+                        "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    LoadComplaints();
+                    return;
+                }
+
+                complaint.IsResolved = true;
+                Core.Context.SaveChanges();
+                LoadComplaints();
+
+                MessageBox.Show("Жалоба отклонена", "Успех",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при отклонении жалобы: {ex.Message}", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void AcceptAuthorRequest_Click(object sender, RoutedEventArgs e)
@@ -226,6 +299,61 @@ namespace FDoBySA.Views
             MessageBox.Show($"Новый пароль для пользователя {user.Login}: {newPassword}\n\n" +
                 "Сохраните пароль и передайте его пользователю",
                 "Пароль сброшен", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        private void LoadFrozenBooks()
+        {
+            try
+            {
+                var frozenBooks = Core.Context.Books
+                    .Where(b => b.IsFrozen)
+                    .Select(b => new
+                    {
+                        b.BookId,
+                        b.Title,
+                        b.FrozenReason,
+                        b.CreatedAt,
+                        AuthorName = b.Users.DisplayName
+                    })
+                    .OrderByDescending(b => b.CreatedAt)
+                    .ToList();
+
+                FrozenBooksGrid.ItemsSource = frozenBooks;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка загрузки замороженных книг: {ex.Message}",
+                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void UnfreezeBook_Click(object sender, RoutedEventArgs e)
+        {
+            int bookId = (int)((Button)sender).Tag;
+
+            var result = MessageBox.Show("Разморозить эту книгу?\n\n" +
+                "После разморозки книга снова появится в каталоге.",
+                "Подтверждение", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    var book = Core.Context.Books.First(b => b.BookId == bookId);
+                    book.IsFrozen = false;
+                    book.FrozenReason = null;
+                    Core.Context.SaveChanges();
+
+                    MessageBox.Show("Книга разморожена!", "Успех",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+
+                    LoadFrozenBooks();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка при разморозке: {ex.Message}", "Ошибка",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
         }
     }
 }

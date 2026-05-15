@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -32,7 +33,7 @@ namespace FDoBySA.Views
             if (!_showFrozen)
                 query = query.Where(b => !b.IsFrozen);
 
-            var books = query
+            var booksFromDb = query
                 .Select(b => new
                 {
                     b.BookId,
@@ -46,6 +47,21 @@ namespace FDoBySA.Views
                 })
                 .OrderByDescending(b => b.CreatedAt)
                 .ToList();
+
+            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            var books = booksFromDb.Select(b => new
+            {
+                b.BookId,
+                b.Title,
+                b.Description,
+                CoverPath = string.IsNullOrEmpty(b.CoverPath)
+                    ? null
+                    : Path.Combine(baseDir, b.CoverPath.Replace('/', '\\')),
+                b.TextContent,
+                b.IsFrozen,
+                b.FrozenReason,
+                b.CreatedAt
+            }).ToList();
 
             BooksGrid.ItemsSource = books;
             btnFrozenBooks.Content = _showFrozen ? "Обычные книги" : "Замороженные книги";
@@ -81,16 +97,10 @@ namespace FDoBySA.Views
         private async void DeleteBook_Click(object sender, RoutedEventArgs e)
         {
             int bookId = (int)((Button)sender).Tag;
-            var reviewsCount = Core.Context.Reviews.Count(r => r.BookId == bookId);
-            var readingListsCount = Core.Context.ReadingLists.Count(rl => rl.BookId == bookId);
-            var complaintsCount = Core.Context.Complaints.Count(c => c.TargetType == "Book" && c.TargetId == bookId);
 
-            string message = $"Удалить книгу?\n\nЭто действие нельзя отменить.\n";
-
-            message += "\n\nПродолжить?";
-
-            var result = MessageBox.Show(message, "Подтверждение удаления",
-                MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            var result = MessageBox.Show("Удалить эту книгу?\n\nЭто действие нельзя отменить.\n\n" +
+                "Все связанные отзывы и записи в списках также будут удалены",
+                "Подтверждение удаления", MessageBoxButton.YesNo, MessageBoxImage.Warning);
 
             if (result == MessageBoxResult.Yes)
             {
@@ -111,6 +121,9 @@ namespace FDoBySA.Views
 
                     await Core.Context.SaveChangesAsync();
                     LoadBooks();
+
+                    MessageBox.Show("Книга успешно удалена", "Успех",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 catch (Exception ex)
                 {
@@ -124,6 +137,14 @@ namespace FDoBySA.Views
         {
             _showFrozen = !_showFrozen;
             LoadBooks();
+        }
+        private void Image_ImageFailed(object sender, ExceptionRoutedEventArgs e)
+        {
+            var img = sender as Image;
+            if (img != null)
+            {
+                img.Source = null;
+            }
         }
     }
 }
