@@ -19,7 +19,8 @@ namespace FDoBySA.Views
 
             if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
             {
-                ShowStatus("Введите логин и пароль");
+                MessageBox.Show("Введите логин и пароль", "Предупреждение",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -36,12 +37,14 @@ namespace FDoBySA.Views
                 }
                 else
                 {
-                    ShowStatus("Неверный логин или пароль");
+                    MessageBox.Show("Неверный логин или пароль", "Ошибка",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             catch (Exception ex)
             {
-                ShowStatus($"Ошибка подключения: {ex.Message}");
+                MessageBox.Show($"Ошибка подключения: {ex.Message}", "Критическая ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -50,23 +53,6 @@ namespace FDoBySA.Views
             RegisterWindow register = new RegisterWindow();
             register.Owner = this;
             register.ShowDialog();
-        }
-
-        private void ShowStatus(string message)
-        {
-            txtStatus.Text = message;
-            txtStatus.Visibility = Visibility.Visible;
-
-            var timer = new System.Windows.Threading.DispatcherTimer
-            {
-                Interval = TimeSpan.FromSeconds(3)
-            };
-            timer.Tick += (s, args) =>
-            {
-                txtStatus.Visibility = Visibility.Collapsed;
-                timer.Stop();
-            };
-            timer.Start();
         }
     }
 }
