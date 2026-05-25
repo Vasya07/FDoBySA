@@ -94,7 +94,7 @@ namespace FDoBySA.Views
             NavigationService?.Navigate(new BookPage(bookId));
         }
 
-        private async void DeleteBook_Click(object sender, RoutedEventArgs e)
+        private void DeleteBook_Click(object sender, RoutedEventArgs e)
         {
             int bookId = (int)((Button)sender).Tag;
 
@@ -106,20 +106,30 @@ namespace FDoBySA.Views
             {
                 try
                 {
-                    var reviews = Core.Context.Reviews.Where(r => r.BookId == bookId);
-                    Core.Context.Reviews.RemoveRange(reviews);
+                    var reviews = Core.Context.Reviews.Where(r => r.BookId == bookId).ToList();
+                    foreach (var review in reviews)
+                    {
+                        Core.Context.Reviews.Remove(review);
+                    }
 
-                    var readingLists = Core.Context.ReadingLists.Where(rl => rl.BookId == bookId);
-                    Core.Context.ReadingLists.RemoveRange(readingLists);
+                    var readingLists = Core.Context.ReadingLists.Where(rl => rl.BookId == bookId).ToList();
+                    foreach (var readingList in readingLists)
+                    {
+                        Core.Context.ReadingLists.Remove(readingList);
+                    }
 
                     var complaints = Core.Context.Complaints
-                        .Where(c => c.TargetType == "Book" && c.TargetId == bookId);
-                    Core.Context.Complaints.RemoveRange(complaints);
+                        .Where(c => c.TargetType == "Book" && c.TargetId == bookId).ToList();
+                    foreach (var complaint in complaints)
+                    {
+                        Core.Context.Complaints.Remove(complaint);
+                    }
 
                     var book = Core.Context.Books.First(b => b.BookId == bookId);
                     Core.Context.Books.Remove(book);
 
-                    await Core.Context.SaveChangesAsync();
+                    Core.Context.SaveChanges();
+
                     LoadBooks();
 
                     MessageBox.Show("Книга успешно удалена", "Успех",

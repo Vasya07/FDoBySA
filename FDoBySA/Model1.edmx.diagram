@@ -4,26 +4,27 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="754832a95bc84cdebb853ef174b18389" Name="Diagram1">
-        <EntityTypeShape EntityType="FDoBySA_DBModel.AuthorRequests" Width="1.5" PointX="5.25" PointY="4.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="FDoBySA_DBModel.Books" Width="1.5" PointX="5.25" PointY="7.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="FDoBySA_DBModel.Complaints" Width="1.5" PointX="5.25" PointY="11.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="FDoBySA_DBModel.Genres" Width="1.5" PointX="7.5" PointY="8" IsExpanded="true" />
-        <EntityTypeShape EntityType="FDoBySA_DBModel.ReadingLists" Width="1.5" PointX="7.5" PointY="10.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="FDoBySA_DBModel.Reviews" Width="1.5" PointX="10.5" PointY="8.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="FDoBySA_DBModel.Roles" Width="1.5" PointX="0.75" PointY="10" IsExpanded="true" />
-        <EntityTypeShape EntityType="FDoBySA_DBModel.UnfreezeRequests" Width="1.5" PointX="5.25" PointY="14.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="FDoBySA_DBModel.Users" Width="1.5" PointX="3" PointY="8.75" IsExpanded="true" />
-        <AssociationConnector Association="FDoBySA_DBModel.FK_AuthorRequests_Users" ManuallyRouted="false" />
-        <AssociationConnector Association="FDoBySA_DBModel.FK_Books_Users" ManuallyRouted="false" />
-        <AssociationConnector Association="FDoBySA_DBModel.FK_ReadingLists_Books" ManuallyRouted="false" />
-        <AssociationConnector Association="FDoBySA_DBModel.FK_Reviews_Books" ManuallyRouted="false" />
-        <AssociationConnector Association="FDoBySA_DBModel.FK_Complaints_Users" ManuallyRouted="false" />
-        <AssociationConnector Association="FDoBySA_DBModel.FK_ReadingLists_Users" ManuallyRouted="false" />
-        <AssociationConnector Association="FDoBySA_DBModel.FK_Reviews_Users" ManuallyRouted="false" />
-        <AssociationConnector Association="FDoBySA_DBModel.FK_Users_Roles" ManuallyRouted="false" />
-        <AssociationConnector Association="FDoBySA_DBModel.FK_UnfreezeRequests_Users" ManuallyRouted="false" />
-        <AssociationConnector Association="FDoBySA_DBModel.BookGenres" ManuallyRouted="false" />
+      <Diagram DiagramId="f00eba388fce4d4f8cd08a221dc36a51" Name="Diagram1">
+        <EntityTypeShape EntityType="KuraevBDGordovModel.AuthorRequests" Width="1.5" PointX="5.25" PointY="4.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="KuraevBDGordovModel.Books" Width="1.5" PointX="5.25" PointY="7.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="KuraevBDGordovModel.Complaints" Width="1.5" PointX="5.25" PointY="11.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="KuraevBDGordovModel.Genres" Width="1.5" PointX="7.5" PointY="8" IsExpanded="true" />
+        <EntityTypeShape EntityType="KuraevBDGordovModel.ReadingLists" Width="1.5" PointX="7.5" PointY="10.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="KuraevBDGordovModel.Reviews" Width="1.5" PointX="10.5" PointY="8.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="KuraevBDGordovModel.Roles" Width="1.5" PointX="0.75" PointY="10" IsExpanded="true" />
+        <EntityTypeShape EntityType="KuraevBDGordovModel.sysdiagrams" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="KuraevBDGordovModel.UnfreezeRequests" Width="1.5" PointX="5.25" PointY="14.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="KuraevBDGordovModel.Users" Width="1.5" PointX="3" PointY="8.75" IsExpanded="true" />
+        <AssociationConnector Association="KuraevBDGordovModel.FK_AuthorRequests_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="KuraevBDGordovModel.FK_Books_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="KuraevBDGordovModel.FK_ReadingLists_Books" ManuallyRouted="false" />
+        <AssociationConnector Association="KuraevBDGordovModel.FK_Reviews_Books" ManuallyRouted="false" />
+        <AssociationConnector Association="KuraevBDGordovModel.FK_Complaints_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="KuraevBDGordovModel.FK_ReadingLists_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="KuraevBDGordovModel.FK_Reviews_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="KuraevBDGordovModel.FK_Users_Roles" ManuallyRouted="false" />
+        <AssociationConnector Association="KuraevBDGordovModel.FK_UnfreezeRequests_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="KuraevBDGordovModel.BookGenres" ManuallyRouted="false" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

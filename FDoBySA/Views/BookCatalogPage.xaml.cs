@@ -78,7 +78,7 @@ namespace FDoBySA.Views
                         AuthorName = b.Users.DisplayName,
                         AvgRating = b.Reviews.Where(r => !r.IsFrozen)
                                     .Select(r => (double?)r.Rating).Average() ?? 0,
-                        Genres = b.Genres.Select(g => g.GenreName).ToList()
+                        Genres = b.Genres.Select(g => g.GenreName)
                     })
                     .ToList();
 
@@ -96,7 +96,7 @@ namespace FDoBySA.Views
                     b.IsFrozen,
                     b.AuthorName,
                     b.AvgRating,
-                    b.Genres
+                    Genres = b.Genres.ToList()
                 }).ToList();
 
                 string search = txtSearch.Text.Trim();

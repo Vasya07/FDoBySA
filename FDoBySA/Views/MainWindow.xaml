@@ -11,14 +11,14 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Border x:Name="FrozenWarning" Grid.Row="0" Background="#E74C3C" Height="40"
+        <Border x:Name="FrozenWarning" Grid.Row="0" Background="{StaticResource SidebarBackground}" Height="40"
                 Visibility="Collapsed">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <TextBlock Text="Ваш аккаунт заморожен!" 
+                <TextBlock Text="Ваш аккаунт заморожен! Причина: " 
                            Foreground="White" VerticalAlignment="Center"/>
                 <TextBlock x:Name="txtFrozenReason" Foreground="White" 
                            VerticalAlignment="Center" FontWeight="Bold"/>
-                <TextBlock Text="Перейдите в профиль для подачи апелляции" 
+                <TextBlock Text=". Перейдите в профиль для подачи апелляции на разморозку аккаунта!" 
                            Foreground="White" VerticalAlignment="Center"/>
             </StackPanel>
         </Border>
@@ -29,7 +29,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Border Grid.Column="0" Background="#2C3E50">
+            <Border Grid.Column="0" Background="{StaticResource SidebarBackground}">
                 <StackPanel Margin="0,20">
                     <Button x:Name="btnCatalog" ToolTip="Каталог книг" Click="BtnCatalog_Click"
                             Style="{StaticResource SidebarButtonStyle}">

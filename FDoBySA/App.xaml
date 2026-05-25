@@ -4,12 +4,21 @@
              StartupUri="Views/LoginWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
+            <SolidColorBrush x:Key="AccentColor" Color="#2196F3"/>
+            <SolidColorBrush x:Key="AccentLightColor" Color="#64B5F6"/>
+            <SolidColorBrush x:Key="AccentDarkColor" Color="#1976D2"/>
 
-            <DropShadowEffect x:Key="ShadowEffect" 
-                              BlurRadius="5" 
-                              ShadowDepth="2" 
-                              Opacity="0.2"/>
-            
+            <SolidColorBrush x:Key="SidebarBackground" Color="LightBlue"/>
+            <SolidColorBrush x:Key="SidebarButtonHover" Color="#313244"/>
+
+            <SolidColorBrush x:Key="SuccessColor" Color="#4CAF50"/>
+            <SolidColorBrush x:Key="DangerColor" Color="#F44336"/>
+            <SolidColorBrush x:Key="WarningColor" Color="#FF9800"/>
+
+            <SolidColorBrush x:Key="PageBackground" Color="#F8F9FA"/>
+            <SolidColorBrush x:Key="CardBackground" Color="#FFFFFF"/>
+            <SolidColorBrush x:Key="CardBorder" Color="#E0E0E0"/>
+
             <Style x:Key="SidebarButtonStyle" TargetType="Button">
                 <Setter Property="Width" Value="50"/>
                 <Setter Property="Height" Value="50"/>
@@ -17,54 +26,44 @@
                 <Setter Property="Background" Value="Transparent"/>
                 <Setter Property="BorderThickness" Value="0"/>
                 <Setter Property="Cursor" Value="Hand"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Border Background="{TemplateBinding Background}" 
-                                    CornerRadius="5">
-                                <ContentPresenter HorizontalAlignment="Center" 
-                                                  VerticalAlignment="Center"/>
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
+                <Setter Property="Foreground" Value="{StaticResource CardBackground}"/>
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="#34495E"/>
+                        <Setter Property="Background" Value="{StaticResource SidebarButtonHover}"/>
                     </Trigger>
                 </Style.Triggers>
             </Style>
-
+            
             <Style x:Key="BookCardStyle" TargetType="Border">
-                <Setter Property="BorderBrush" Value="#DDD"/>
+                <Setter Property="BorderBrush" Value="{StaticResource CardBorder}"/>
                 <Setter Property="BorderThickness" Value="1"/>
                 <Setter Property="Margin" Value="10"/>
                 <Setter Property="Padding" Value="10"/>
                 <Setter Property="Width" Value="200"/>
-                <Setter Property="CornerRadius" Value="5"/>
-                <Setter Property="Background" Value="White"/>
-                <Setter Property="Effect" Value="{StaticResource ShadowEffect}"/>
+                <Setter Property="CornerRadius" Value="8"/>
+                <Setter Property="Background" Value="{StaticResource CardBackground}"/>
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="#F9F9F9"/>
-                        <Setter Property="BorderBrush" Value="#2196F3"/>
+                        <Setter Property="Background" Value="#FAFAFA"/>
+                        <Setter Property="BorderBrush" Value="{StaticResource AccentColor}"/>
                     </Trigger>
                 </Style.Triggers>
             </Style>
 
             <Style x:Key="ActionButtonStyle" TargetType="Button">
                 <Setter Property="Height" Value="30"/>
-                <Setter Property="Padding" Value="10,0"/>
+                <Setter Property="Padding" Value="12,0"/>
                 <Setter Property="Cursor" Value="Hand"/>
-                <Setter Property="Background" Value="#2196F3"/>
+                <Setter Property="Background" Value="{StaticResource AccentColor}"/>
                 <Setter Property="Foreground" Value="White"/>
                 <Setter Property="BorderThickness" Value="0"/>
                 <Setter Property="FontSize" Value="12"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
                             <Border Background="{TemplateBinding Background}" 
-                                    CornerRadius="3">
+                                    CornerRadius="4">
                                 <ContentPresenter HorizontalAlignment="Center" 
                                                   VerticalAlignment="Center"/>
                             </Border>
@@ -73,17 +72,14 @@
                 </Setter>
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="#1976D2"/>
-                    </Trigger>
-                    <Trigger Property="IsEnabled" Value="False">
-                        <Setter Property="Background" Value="#B0BEC5"/>
+                        <Setter Property="Background" Value="{StaticResource AccentDarkColor}"/>
                     </Trigger>
                 </Style.Triggers>
             </Style>
 
             <Style x:Key="DangerButtonStyle" TargetType="Button" 
                    BasedOn="{StaticResource ActionButtonStyle}">
-                <Setter Property="Background" Value="#F44336"/>
+                <Setter Property="Background" Value="{StaticResource DangerColor}"/>
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
                         <Setter Property="Background" Value="#D32F2F"/>
@@ -93,7 +89,7 @@
 
             <Style x:Key="SuccessButtonStyle" TargetType="Button" 
                    BasedOn="{StaticResource ActionButtonStyle}">
-                <Setter Property="Background" Value="#4CAF50"/>
+                <Setter Property="Background" Value="{StaticResource SuccessColor}"/>
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
                         <Setter Property="Background" Value="#388E3C"/>
@@ -103,12 +99,43 @@
 
             <Style x:Key="WarningButtonStyle" TargetType="Button" 
                    BasedOn="{StaticResource ActionButtonStyle}">
-                <Setter Property="Background" Value="#FF9800"/>
+                <Setter Property="Background" Value="{StaticResource WarningColor}"/>
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
                         <Setter Property="Background" Value="#F57C00"/>
                     </Trigger>
                 </Style.Triggers>
+            </Style>
+
+            <Style TargetType="TextBox">
+                <Setter Property="BorderBrush" Value="{StaticResource CardBorder}"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Padding" Value="8,5"/>
+                <Setter Property="FontSize" Value="13"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Style.Triggers>
+                    <Trigger Property="IsFocused" Value="True">
+                        <Setter Property="BorderBrush" Value="{StaticResource AccentColor}"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style TargetType="PasswordBox">
+                <Setter Property="BorderBrush" Value="{StaticResource CardBorder}"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Padding" Value="8,5"/>
+                <Setter Property="FontSize" Value="13"/>
+                <Style.Triggers>
+                    <Trigger Property="IsFocused" Value="True">
+                        <Setter Property="BorderBrush" Value="{StaticResource AccentColor}"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style TargetType="ComboBox">
+                <Setter Property="Height" Value="32"/>
+                <Setter Property="BorderBrush" Value="{StaticResource CardBorder}"/>
+                <Setter Property="BorderThickness" Value="1"/>
             </Style>
 
         </ResourceDictionary>

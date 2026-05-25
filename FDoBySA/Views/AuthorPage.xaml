@@ -35,7 +35,7 @@
                     <DataTemplate>
                         <Border Style="{StaticResource BookCardStyle}">
                             <StackPanel>
-                                <Border Background="#F0F0F0" CornerRadius="3" 
+                                <Border Background="{StaticResource SidebarBackground}" CornerRadius="3" 
                                         Width="180" Height="240">
                                     <Image Source="{Binding CoverPath}" 
                                            Width="180" Height="240" 

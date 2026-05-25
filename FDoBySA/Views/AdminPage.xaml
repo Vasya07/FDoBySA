@@ -18,7 +18,7 @@
                 <ItemsControl x:Name="ComplaintsGrid" Margin="10">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border Background="White" CornerRadius="5" 
+                            <Border Background="{StaticResource SidebarBackground}" CornerRadius="5" 
                                     Margin="0,0,0,10" Padding="15">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -67,7 +67,7 @@
                 <ItemsControl x:Name="AuthorRequestsGrid" Margin="10">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border Background="White" CornerRadius="5" 
+                            <Border Background="{StaticResource SidebarBackground}" CornerRadius="5" 
                                     Margin="0,0,0,10" Padding="15">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -111,7 +111,7 @@
                 <ItemsControl x:Name="AppealsGrid" Margin="10">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border Background="White" CornerRadius="5" 
+                            <Border Background="{StaticResource SidebarBackground}" CornerRadius="5" 
                                     Margin="0,0,0,10" Padding="15">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -160,7 +160,7 @@
                 <ItemsControl x:Name="FrozenBooksGrid" Margin="10">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border Background="White" CornerRadius="5" 
+                            <Border Background="{StaticResource SidebarBackground}" CornerRadius="5" 
                         Margin="0,0,0,10" Padding="15">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -213,7 +213,7 @@
                         <ItemsControl x:Name="UsersGrid">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Background="White" CornerRadius="5" 
+                                    <Border Background="{StaticResource SidebarBackground}" CornerRadius="5" 
                                             Margin="0,0,0,5" Padding="10">
                                         <Grid>
                                             <Grid.ColumnDefinitions>

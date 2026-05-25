@@ -24,15 +24,12 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <!-- Заголовок -->
             <TextBlock Text="Добавление книги" FontSize="20" FontWeight="Bold"
                        Margin="0,0,0,20" x:Name="TitleLabel"/>
 
-            <!-- Название книги -->
             <TextBlock Grid.Row="1" Text="Название книги*" FontWeight="Bold" Margin="0,0,0,5"/>
             <TextBox x:Name="txtTitle" Grid.Row="2" Height="35" Padding="10,0"/>
 
-            <!-- Обложка -->
             <TextBlock Grid.Row="3" Text="Обложка (оптимальный размер: 300x400 px)" FontWeight="Bold" Margin="0,15,0,5"/>
             <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="0,0,0,5">
                 <TextBox x:Name="txtCoverPath" Width="400" Height="30" 
@@ -42,14 +39,12 @@
                         Click="SelectCover_Click"/>
             </StackPanel>
 
-            <!-- Предпросмотр -->
-            <Border Grid.Row="5" Background="#F0F0F0" CornerRadius="5" 
+            <Border Grid.Row="5" Background="{StaticResource SidebarBackground}" CornerRadius="5" 
                     Width="150" Height="200" Margin="0,5,0,10">
                 <Image x:Name="imgPreview" Stretch="UniformToFill"
                        ToolTip="Предпросмотр обложки"/>
             </Border>
 
-            <!-- Жанры -->
             <TextBlock Grid.Row="6" Text="Жанры" FontWeight="Bold" Margin="0,10,0,5"/>
             <ListBox x:Name="lstGenres" Grid.Row="7" Height="100" 
                      SelectionMode="Multiple">
@@ -61,19 +56,16 @@
                 </ListBox.ItemTemplate>
             </ListBox>
 
-            <!-- Описание -->
             <TextBlock Grid.Row="8" Text="Описание" FontWeight="Bold" Margin="0,15,0,5"/>
             <TextBox x:Name="txtDescription" Grid.Row="9" Height="80" 
                      TextWrapping="Wrap" AcceptsReturn="True" Padding="10"
                      VerticalScrollBarVisibility="Auto"/>
 
-            <!-- Текст книги -->
             <TextBlock Grid.Row="10" Text="Текст книги*" FontWeight="Bold" Margin="0,15,0,5"/>
             <TextBox x:Name="txtContent" Grid.Row="11" Height="150" 
                      TextWrapping="Wrap" AcceptsReturn="True" Padding="10"
                      VerticalScrollBarVisibility="Auto"/>
 
-            <!-- Кнопки -->
             <StackPanel Grid.Row="12" Orientation="Horizontal" 
                         Margin="0,20,0,10" HorizontalAlignment="Center">
                 <Button Content="Сохранить" Width="120" Height="35"

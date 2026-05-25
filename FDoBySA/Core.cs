@@ -8,6 +8,6 @@ namespace FDoBySA
 {
     internal class Core
     {
-        public static FDoBySA_DBEntities Context = new FDoBySA_DBEntities();
+        public static KuraevBDGordovEntities Context = new KuraevBDGordovEntities();
     }
 }

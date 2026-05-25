@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="Хранилище FDoBySA_DBModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="Хранилище KuraevBDGordovModel" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="AuthorRequests">
           <Key>
             <PropertyRef Name="RequestId" />
@@ -86,6 +86,16 @@
           <Property Name="RoleId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="RoleName" Type="nvarchar" MaxLength="100" Nullable="false" />
         </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
         <EntityType Name="UnfreezeRequests">
           <Key>
             <PropertyRef Name="RequestId" />
@@ -110,7 +120,7 @@
           <Property Name="DisplayName" Type="nvarchar" MaxLength="500" Nullable="false" />
           <Property Name="RoleId" Type="int" Nullable="false" />
           <Property Name="IsFrozen" Type="bit" Nullable="false" />
-          <Property Name="FrozenReason" Type="nvarchar(max)" />
+          <Property Name="FrozenReason" Type="nvarchar" MaxLength="500" />
           <Property Name="CreatedAt" Type="datetime" />
         </EntityType>
         <Association Name="FK_AuthorRequests_Users">
@@ -249,7 +259,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="Хранилище FDoBySA_DBModelContainer">
+        <EntityContainer Name="Хранилище KuraevBDGordovModelContainer">
           <EntitySet Name="AuthorRequests" EntityType="Self.AuthorRequests" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BookGenres" EntityType="Self.BookGenres" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Books" EntityType="Self.Books" Schema="dbo" store:Type="Tables" />
@@ -258,6 +268,7 @@
           <EntitySet Name="ReadingLists" EntityType="Self.ReadingLists" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Reviews" EntityType="Self.Reviews" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Roles" EntityType="Self.Roles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UnfreezeRequests" EntityType="Self.UnfreezeRequests" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_AuthorRequests_Users" Association="Self.FK_AuthorRequests_Users">
@@ -309,7 +320,7 @@
     </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="FDoBySA_DBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <Schema Namespace="KuraevBDGordovModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityType Name="AuthorRequests">
           <Key>
             <PropertyRef Name="RequestId" />
@@ -395,6 +406,16 @@
           <Property Name="RoleName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="Users" Relationship="Self.FK_Users_Roles" FromRole="Roles" ToRole="Users" />
         </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
         <EntityType Name="UnfreezeRequests">
           <Key>
             <PropertyRef Name="RequestId" />
@@ -420,7 +441,7 @@
           <Property Name="DisplayName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="RoleId" Type="Int32" Nullable="false" />
           <Property Name="IsFrozen" Type="Boolean" Nullable="false" />
-          <Property Name="FrozenReason" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FrozenReason" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="CreatedAt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="AuthorRequests" Relationship="Self.FK_AuthorRequests_Users" FromRole="Users" ToRole="AuthorRequests" />
           <NavigationProperty Name="Books" Relationship="Self.FK_Books_Users" FromRole="Users" ToRole="Books" />
@@ -542,7 +563,7 @@
           <End Role="Books" Type="Self.Books" Multiplicity="*" />
           <End Role="Genres" Type="Self.Genres" Multiplicity="*" />
         </Association>
-        <EntityContainer Name="FDoBySA_DBEntities" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="KuraevBDGordovEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="AuthorRequests" EntityType="Self.AuthorRequests" />
           <EntitySet Name="Books" EntityType="Self.Books" />
           <EntitySet Name="Complaints" EntityType="Self.Complaints" />
@@ -550,6 +571,7 @@
           <EntitySet Name="ReadingLists" EntityType="Self.ReadingLists" />
           <EntitySet Name="Reviews" EntityType="Self.Reviews" />
           <EntitySet Name="Roles" EntityType="Self.Roles" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
           <EntitySet Name="UnfreezeRequests" EntityType="Self.UnfreezeRequests" />
           <EntitySet Name="Users" EntityType="Self.Users" />
           <AssociationSet Name="FK_AuthorRequests_Users" Association="Self.FK_AuthorRequests_Users">
@@ -598,9 +620,9 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="Хранилище FDoBySA_DBModelContainer" CdmEntityContainer="FDoBySA_DBEntities">
+        <EntityContainerMapping StorageEntityContainer="Хранилище KuraevBDGordovModelContainer" CdmEntityContainer="KuraevBDGordovEntities">
           <EntitySetMapping Name="AuthorRequests">
-            <EntityTypeMapping TypeName="FDoBySA_DBModel.AuthorRequests">
+            <EntityTypeMapping TypeName="KuraevBDGordovModel.AuthorRequests">
               <MappingFragment StoreEntitySet="AuthorRequests">
                 <ScalarProperty Name="RequestId" ColumnName="RequestId" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
@@ -611,7 +633,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Books">
-            <EntityTypeMapping TypeName="FDoBySA_DBModel.Books">
+            <EntityTypeMapping TypeName="KuraevBDGordovModel.Books">
               <MappingFragment StoreEntitySet="Books">
                 <ScalarProperty Name="BookId" ColumnName="BookId" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
@@ -626,7 +648,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Complaints">
-            <EntityTypeMapping TypeName="FDoBySA_DBModel.Complaints">
+            <EntityTypeMapping TypeName="KuraevBDGordovModel.Complaints">
               <MappingFragment StoreEntitySet="Complaints">
                 <ScalarProperty Name="ComplaintId" ColumnName="ComplaintId" />
                 <ScalarProperty Name="ComplainantId" ColumnName="ComplainantId" />
@@ -639,7 +661,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Genres">
-            <EntityTypeMapping TypeName="FDoBySA_DBModel.Genres">
+            <EntityTypeMapping TypeName="KuraevBDGordovModel.Genres">
               <MappingFragment StoreEntitySet="Genres">
                 <ScalarProperty Name="GenreId" ColumnName="GenreId" />
                 <ScalarProperty Name="GenreName" ColumnName="GenreName" />
@@ -648,7 +670,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="ReadingLists">
-            <EntityTypeMapping TypeName="FDoBySA_DBModel.ReadingLists">
+            <EntityTypeMapping TypeName="KuraevBDGordovModel.ReadingLists">
               <MappingFragment StoreEntitySet="ReadingLists">
                 <ScalarProperty Name="ListId" ColumnName="ListId" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
@@ -659,7 +681,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Reviews">
-            <EntityTypeMapping TypeName="FDoBySA_DBModel.Reviews">
+            <EntityTypeMapping TypeName="KuraevBDGordovModel.Reviews">
               <MappingFragment StoreEntitySet="Reviews">
                 <ScalarProperty Name="ReviewId" ColumnName="ReviewId" />
                 <ScalarProperty Name="BookId" ColumnName="BookId" />
@@ -672,15 +694,26 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Roles">
-            <EntityTypeMapping TypeName="FDoBySA_DBModel.Roles">
+            <EntityTypeMapping TypeName="KuraevBDGordovModel.Roles">
               <MappingFragment StoreEntitySet="Roles">
                 <ScalarProperty Name="RoleId" ColumnName="RoleId" />
                 <ScalarProperty Name="RoleName" ColumnName="RoleName" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="KuraevBDGordovModel.sysdiagrams">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="UnfreezeRequests">
-            <EntityTypeMapping TypeName="FDoBySA_DBModel.UnfreezeRequests">
+            <EntityTypeMapping TypeName="KuraevBDGordovModel.UnfreezeRequests">
               <MappingFragment StoreEntitySet="UnfreezeRequests">
                 <ScalarProperty Name="RequestId" ColumnName="RequestId" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
@@ -694,7 +727,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Users">
-            <EntityTypeMapping TypeName="FDoBySA_DBModel.Users">
+            <EntityTypeMapping TypeName="KuraevBDGordovModel.Users">
               <MappingFragment StoreEntitySet="Users">
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="Login" ColumnName="Login" />
@@ -708,7 +741,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <AssociationSetMapping Name="BookGenres" TypeName="FDoBySA_DBModel.BookGenres" StoreEntitySet="BookGenres">
+          <AssociationSetMapping Name="BookGenres" TypeName="KuraevBDGordovModel.BookGenres" StoreEntitySet="BookGenres">
             <EndProperty Name="Books">
               <ScalarProperty Name="BookId" ColumnName="BookId" />
             </EndProperty>
@@ -732,7 +765,7 @@
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
         <DesignerProperty Name="EnablePluralization" Value="false" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
-        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="UseLegacyProvider" Value="true" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="Нет" />
       </DesignerInfoPropertySet>
     </Options>
